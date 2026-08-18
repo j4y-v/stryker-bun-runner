@@ -2,7 +2,12 @@
 node_modules/
 
 # Build output
-/dist/
+# NOTE: on the `integration/*` branches dist IS committed on purpose. Those
+# branches exist to be consumed directly as a git dependency while the upstream
+# PRs are in review, and a git install runs no build step (package.json has no
+# `prepare` script and `files` publishes only `dist`), so an ignored dist would
+# install an empty package. Do not carry this change into develop/main.
+# /dist/
 
 # Coverage
 /coverage/
