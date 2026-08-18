@@ -6607,6 +6607,9 @@ async function getPsRss(pid) {
 var KILL_GRACE_PERIOD_MS = 500;
 var SPAWN_DEPTH_ENV = "__STRYKER_BUN_RUNNER_DEPTH__";
 var DEFAULT_MAX_SPAWN_DEPTH = 1;
+function stripAnsi(text) {
+  return text.replaceAll(/\u001B\[[0-9;?]*[\u0020-\u002F]*[\u0040-\u007E]|\u001B\][^\u0007\u001B]*(?:\u0007|\u001B\\)/g, "");
+}
 function readSpawnDepth(raw) {
   const parsed = Number(raw);
   return Number.isInteger(parsed) && parsed > 0 ? parsed : 0;
@@ -6799,7 +6802,7 @@ async function spawnBunTests(options, spawnDepth) {
         stderrChunks.push(data);
         if (options.inspectWaitPort && !inspectorUrlExtracted && options.onInspectorReady) {
           const text = Buffer.concat(stderrChunks).toString();
-          const match = /Listening:[\t\v\f\r \u00A0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*\n\s*(ws:\/\/\S+)/.exec(text);
+          const match = /Listening:[\t\v\f\r \u00A0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*\n\s*(ws:\/\/\S+)/.exec(stripAnsi(text));
           if (match) {
             inspectorUrlExtracted = true;
             options.onInspectorReady(match[1]);
